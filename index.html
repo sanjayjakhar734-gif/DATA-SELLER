@@ -1,0 +1,1157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>DataCash Demo</title>
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f3f4f6;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+        }
+        
+        .header {
+            background: white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            padding: 16px;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            color: #2563eb;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        
+        .balance-header {
+            text-align: right;
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .balance-amount {
+            font-size: 16px;
+            font-weight: bold;
+            color: #10b981;
+        }
+        
+        .main-content {
+            padding: 16px 16px 80px;
+        }
+        
+        .balance-card {
+            background: linear-gradient(135deg, #2563eb, #7c3aed);
+            border-radius: 16px;
+            padding: 24px;
+            color: white;
+            margin-bottom: 24px;
+        }
+        
+        .balance-title {
+            opacity: 0.8;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+        
+        .balance-value {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        
+        .stat-card {
+            background: rgba(255,255,255,0.2);
+            border-radius: 12px;
+            padding: 12px;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            opacity: 0.8;
+            margin-bottom: 4px;
+        }
+        
+        .stat-value {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .section {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .section-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #1f2937;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .section-title svg {
+            width: 20px;
+            height: 20px;
+            margin-right: 8px;
+            color: #2563eb;
+        }
+        
+        .info-box {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 16px;
+        }
+        
+        .info-text {
+            color: #166534;
+            font-weight: 500;
+            font-size: 14px;
+        }
+        
+        .info-subtext {
+            color: #16a34a;
+            font-size: 12px;
+        }
+        
+        .sell-button {
+            width: 100%;
+            padding: 16px;
+            border-radius: 12px;
+            border: none;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        
+        .sell-button.start {
+            background: #10b981;
+            color: white;
+        }
+        
+        .sell-button.stop {
+            background: #ef4444;
+            color: white;
+        }
+        
+        .sell-button:active {
+            transform: scale(0.98);
+        }
+        
+        .selling-indicator {
+            background: #eff6ff;
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 12px;
+            text-align: center;
+            color: #2563eb;
+            font-weight: 500;
+        }
+        
+        .actions-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        
+        .action-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .action-card:active {
+            transform: scale(0.95);
+        }
+        
+        .action-icon {
+            width: 32px;
+            height: 32px;
+            margin: 0 auto 8px;
+            color: #f97316;
+        }
+        
+        .action-title {
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 4px;
+        }
+        
+        .action-subtitle {
+            font-size: 12px;
+            color: #6b7280;
+        }
+        
+        .form-group {
+            margin-bottom: 16px;
+        }
+        
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 16px;
+            background: white;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+        }
+        
+        .quick-amounts {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-top: 8px;
+        }
+        
+        .quick-amount {
+            padding: 8px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            background: white;
+            text-align: center;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            color: #2563eb;
+        }
+        
+        .quick-amount:active {
+            background: #eff6ff;
+        }
+        
+        .quick-amount.disabled {
+            color: #9ca3af;
+            cursor: not-allowed;
+        }
+        
+        .methods-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+        
+        .method-card {
+            padding: 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .method-card.selected {
+            border-color: #2563eb;
+            background: #eff6ff;
+            color: #2563eb;
+        }
+        
+        .method-icon {
+            width: 24px;
+            height: 24px;
+            margin: 0 auto 8px;
+        }
+        
+        .method-name {
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .submit-button {
+            width: 100%;
+            padding: 12px;
+            background: #f97316;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        
+        .submit-button:active {
+            transform: scale(0.98);
+            background: #ea580c;
+        }
+        
+        .warning-box {
+            background: #fefce8;
+            border: 1px solid #fde047;
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 16px;
+        }
+        
+        .warning-text {
+            color: #a16207;
+            font-size: 12px;
+        }
+        
+        .transaction-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px;
+            background: #f9fafb;
+            border-radius: 8px;
+            margin-bottom: 8px;
+        }
+        
+        .transaction-left {
+            display: flex;
+            align-items: center;
+        }
+        
+        .transaction-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+        }
+        
+        .transaction-icon.sell {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+        
+        .transaction-icon.withdraw {
+            background: #fed7aa;
+            color: #ea580c;
+        }
+        
+        .transaction-details {
+            font-size: 14px;
+        }
+        
+        .transaction-title {
+            font-weight: 500;
+            color: #1f2937;
+        }
+        
+        .transaction-date {
+            font-size: 12px;
+            color: #6b7280;
+        }
+        
+        .transaction-right {
+            text-align: right;
+        }
+        
+        .transaction-amount {
+            font-weight: bold;
+            font-size: 14px;
+        }
+        
+        .transaction-amount.positive {
+            color: #16a34a;
+        }
+        
+        .transaction-amount.negative {
+            color: #ea580c;
+        }
+        
+        .transaction-status {
+            font-size: 10px;
+            color: #16a34a;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #6b7280;
+        }
+        
+        .empty-icon {
+            width: 48px;
+            height: 48px;
+            margin: 0 auto 12px;
+            color: #d1d5db;
+        }
+        
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            border-top: 1px solid #e5e7eb;
+            padding: 8px;
+            display: flex;
+            justify-content: space-around;
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            color: #6b7280;
+            transition: all 0.2s;
+        }
+        
+        .nav-item.active {
+            color: #2563eb;
+            background: #eff6ff;
+        }
+        
+        .nav-icon {
+            width: 20px;
+            height: 20px;
+            margin-bottom: 4px;
+        }
+        
+        .nav-label {
+            font-size: 10px;
+        }
+        
+        .notification {
+            position: fixed;
+            top: 80px;
+            left: 16px;
+            right: 16px;
+            z-index: 50;
+            background: #10b981;
+            color: white;
+            padding: 12px 16px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            transform: translateY(-100px);
+            transition: transform 0.3s ease;
+        }
+        
+        .notification.show {
+            transform: translateY(0);
+        }
+        
+        .spinner {
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .demo-banner {
+            background: linear-gradient(90deg, #fbbf24, #f59e0b);
+            color: #92400e;
+            padding: 8px;
+            text-align: center;
+            font-size: 12px;
+            font-weight: bold;
+            position: sticky;
+            top: 64px;
+            z-index: 20;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .referral-card {
+            background: linear-gradient(135deg, #10b981, #059669);
+            border-radius: 16px;
+            padding: 20px;
+            color: white;
+            margin-bottom: 20px;
+        }
+        
+        .referral-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        
+        .referral-subtitle {
+            opacity: 0.9;
+            font-size: 14px;
+            margin-bottom: 16px;
+        }
+        
+        .referral-code-box {
+            background: rgba(255,255,255,0.2);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .referral-code {
+            font-family: monospace;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        
+        .copy-button {
+            background: rgba(255,255,255,0.3);
+            border: none;
+            border-radius: 6px;
+            color: white;
+            padding: 8px 12px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+        
+        .referral-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-top: 16px;
+        }
+        
+        .referral-stat {
+            text-align: center;
+        }
+        
+        .referral-stat-value {
+            font-size: 20px;
+            font-weight: bold;
+        }
+        
+        .referral-stat-label {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+        
+        .referral-input-box {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .payout-warning {
+            background: #fef3c7;
+            border: 1px solid #fde047;
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 12px;
+            color: #92400e;
+            font-size: 12px;
+            text-align: center;
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo">
+                    📶 DataCash
+                </div>
+                <div class="balance-header">
+                    <div>Balance</div>
+                    <div class="balance-amount" id="headerBalance">₹0</div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Notification -->
+        <div class="notification" id="notification">
+            <span>✓</span>&nbsp;<span id="notificationText"></span>
+        </div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Home Screen -->
+            <div id="homeScreen">
+                <!-- Balance Card -->
+                <div class="balance-card">
+                    <div class="balance-title">Total Balance</div>
+                    <div class="balance-value" id="totalBalance">₹0</div>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-label">Today's Earnings</div>
+                            <div class="stat-value" id="todayEarnings">₹0</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">Data Sold</div>
+                            <div class="stat-value" id="dataSold">0GB</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Auto Sell Section -->
+                <div class="section">
+                    <div class="section-title">
+                        📱 Auto Data Selling
+                    </div>
+                    
+                    <div class="info-box">
+                        <div class="info-text">💰 Auto Sell: 10MB/sec = ₹1/sec</div>
+                        <div class="info-subtext">Continuous earning mode!</div>
+                    </div>
+                    
+                    <button class="sell-button start" id="sellButton" onclick="toggleSelling()">
+                        ▶️ Start Selling
+                    </button>
+                    
+                    <div class="selling-indicator hidden" id="sellingIndicator">
+                        <div class="spinner">⟳</div> Selling data automatically...
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="actions-grid">
+                    <div class="action-card" onclick="showScreen('withdraw')">
+                        <div class="action-icon">💳</div>
+                        <div class="action-title">Withdraw</div>
+                        <div class="action-subtitle">Cash Out</div>
+                    </div>
+                    <div class="action-card" onclick="showScreen('referral')">
+                        <div class="action-icon">🤝</div>
+                        <div class="action-title">Refer & Earn</div>
+                        <div class="action-subtitle">Get 2.5% Commission</div>
+                    </div>
+                </div>
+                
+                <div class="actions-grid">
+                    <div class="action-card" onclick="showScreen('history')">
+                        <div class="action-icon">📈</div>
+                        <div class="action-title">History</div>
+                        <div class="action-subtitle">Transactions</div>
+                    </div>
+                    <div class="action-card" onclick="generateReferralCode()">
+                        <div class="action-icon">🎁</div>
+                        <div class="action-title">Bonus</div>
+                        <div class="action-subtitle">Daily Rewards</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Withdraw Screen -->
+            <div id="withdrawScreen" class="hidden">
+                <div class="section">
+                    <div class="section-title">
+                        💳 Withdraw Money
+                    </div>
+                    
+                    <div class="info-box">
+                        <div class="info-text">Available Balance: <span id="availableBalance">₹0</span></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Amount (₹)</label>
+                        <input type="number" class="form-input" id="withdrawAmount" placeholder="Enter amount">
+                        <div class="quick-amounts">
+                            <div class="quick-amount" onclick="setAmount(100)">₹100</div>
+                            <div class="quick-amount" onclick="setAmount(500)">₹500</div>
+                            <div class="quick-amount" onclick="setAmount(1000)">₹1000</div>
+                            <div class="quick-amount" onclick="setAmount(2000)">₹2000</div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Select Method</label>
+                        <div class="methods-grid">
+                            <div class="method-card" onclick="selectMethod('PhonePe')">
+                                <div class="method-icon">📞</div>
+                                <div class="method-name">PhonePe</div>
+                            </div>
+                            <div class="method-card" onclick="selectMethod('Paytm')">
+                                <div class="method-icon">💰</div>
+                                <div class="method-name">Paytm</div>
+                            </div>
+                            <div class="method-card" onclick="selectMethod('UPI')">
+                                <div class="method-icon">↗️</div>
+                                <div class="method-name">UPI</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group hidden" id="paymentDetails">
+                        <label class="form-label" id="detailsLabel">Payment Details</label>
+                        <input type="text" class="form-input" id="paymentInput" placeholder="Enter details">
+                    </div>
+                    
+                    <button class="submit-button" onclick="submitWithdraw()">
+                        ➡️ Send Withdrawal Request
+                    </button>
+                    
+                    <div class="warning-box">
+                        <div class="warning-text">
+                            ⚠️ Important Notes:<br>
+                            • Minimum withdrawal: ₹100<br>
+                            • Processing time: 2-24 hours<br>
+                            • No charges on withdrawals
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Referral Screen -->
+            <div id="referralScreen" class="hidden">
+                <!-- Referral Earnings Card -->
+                <div class="referral-card">
+                    <div class="referral-title">🤝 Refer & Earn</div>
+                    <div class="referral-subtitle">Get 2.5% from every friend's earnings!</div>
+                    
+                    <div class="referral-code-box">
+                        <div>
+                            <div style="font-size: 12px; opacity: 0.8;">Your Referral Code</div>
+                            <div class="referral-code" id="myReferralCode">DC-DEMO123</div>
+                        </div>
+                        <button class="copy-button" onclick="copyReferralCode()">Copy</button>
+                    </div>
+                    
+                    <div class="referral-stats">
+                        <div class="referral-stat">
+                            <div class="referral-stat-value" id="referralEarnings">₹0</div>
+                            <div class="referral-stat-label">Referral Earnings</div>
+                        </div>
+                        <div class="referral-stat">
+                            <div class="referral-stat-value" id="totalReferrals">0</div>
+                            <div class="referral-stat-label">Total Referrals</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Enter Referral Code -->
+                <div class="referral-input-box">
+                    <div class="section-title">
+                        🎁 Enter Referral Code
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Friend's Referral Code</label>
+                        <input type="text" class="form-input" id="enterReferralCode" placeholder="Enter code like: DC-ABC123">
+                    </div>
+                    
+                    <button class="submit-button" onclick="applyReferralCode()" style="background: #10b981;">
+                        🚀 Apply Referral Code
+                    </button>
+                </div>
+
+                <!-- How it Works -->
+                <div class="section">
+                    <div class="section-title">
+                        💡 How Referral Works
+                    </div>
+                    
+                    <div style="space-y: 12px;">
+                        <div style="display: flex; align-items: start; margin-bottom: 12px;">
+                            <div style="margin-right: 12px;">1️⃣</div>
+                            <div>
+                                <div style="font-weight: 600; color: #1f2937;">Share Your Code</div>
+                                <div style="font-size: 14px; color: #6b7280;">Copy your referral code and share with friends</div>
+                            </div>
+                        </div>
+                        
+                        <div style="display: flex; align-items: start; margin-bottom: 12px;">
+                            <div style="margin-right: 12px;">2️⃣</div>
+                            <div>
+                                <div style="font-weight: 600; color: #1f2937;">Friend Joins</div>
+                                <div style="font-size: 14px; color: #6b7280;">They enter your code when signing up</div>
+                            </div>
+                        </div>
+                        
+                        <div style="display: flex; align-items: start; margin-bottom: 12px;">
+                            <div style="margin-right: 12px;">3️⃣</div>
+                            <div>
+                                <div style="font-weight: 600; color: #1f2937;">Earn Commission</div>
+                                <div style="font-size: 14px; color: #6b7280;">Get 2.5% from their every earning automatically!</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="payout-warning">
+                        ⚠️ Minimum Payout: ₹3,000 for referral earnings
+                    </div>
+                </div>
+                
+                <!-- Referral History -->
+                <div class="section">
+                    <div class="section-title">
+                        👥 Your Referrals
+                    </div>
+                    
+                    <div class="empty-state" id="emptyReferrals">
+                        <div class="empty-icon">🤝</div>
+                        <div style="font-weight: 500; margin-bottom: 4px;">No referrals yet</div>
+                        <div>Share your code to start earning!</div>
+                    </div>
+                    
+                    <div id="referralsList"></div>
+                </div>
+            </div>
+            <div id="historyScreen" class="hidden">
+                <div class="section">
+                    <div class="section-title">
+                        📈 Transaction History
+                    </div>
+                    
+                    <div class="empty-state" id="emptyHistory">
+                        <div class="empty-icon">📈</div>
+                        <div style="font-weight: 500; margin-bottom: 4px;">No transactions yet</div>
+                        <div>Start selling data to see your history</div>
+                    </div>
+                    
+                    <div id="transactionsList"></div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Bottom Navigation -->
+        <nav class="bottom-nav">
+            <div class="nav-item active" onclick="showScreen('home')">
+                <div class="nav-icon">📱</div>
+                <div class="nav-label">Home</div>
+            </div>
+            <div class="nav-item" onclick="showScreen('withdraw')">
+                <div class="nav-icon">💳</div>
+                <div class="nav-label">Withdraw</div>
+            </div>
+            <div class="nav-item" onclick="showScreen('history')">
+                <div class="nav-icon">📈</div>
+                <div class="nav-label">History</div>
+            </div>
+        </nav>
+    </div>
+
+    <script>
+        // App State
+        let balance = 0;
+        let todaysEarnings = 0;
+        let totalDataSold = 0;
+        let isSellingData = false;
+        let selectedMethod = '';
+        let transactions = [];
+        let sellInterval = null;
+        let referralCode = '';
+        let referralEarnings = 0;
+        let referredUsers = [];
+        let totalReferrals = 0;
+
+        // Update Display Functions
+        function updateBalance() {
+            document.getElementById('headerBalance').textContent = `₹${balance.toLocaleString()}`;
+            document.getElementById('totalBalance').textContent = `₹${balance.toLocaleString()}`;
+            document.getElementById('availableBalance').textContent = `₹${balance.toLocaleString()}`;
+            
+            // Update referral earnings display
+            if (document.getElementById('referralEarnings')) {
+                document.getElementById('referralEarnings').textContent = `₹${referralEarnings.toLocaleString()}`;
+            }
+        }
+
+        function updateEarnings() {
+            document.getElementById('todayEarnings').textContent = `₹${todaysEarnings.toLocaleString()}`;
+            if (document.getElementById('totalReferrals')) {
+                document.getElementById('totalReferrals').textContent = totalReferrals;
+            }
+        }
+
+        function updateDataSold() {
+            document.getElementById('dataSold').textContent = `${totalDataSold}GB`;
+        }
+
+        // Notification System
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            const notificationText = document.getElementById('notificationText');
+            
+            notificationText.textContent = message;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // Screen Navigation
+        function showScreen(screenName) {
+            // Hide all screens
+            document.getElementById('homeScreen').classList.add('hidden');
+            document.getElementById('withdrawScreen').classList.add('hidden');
+            document.getElementById('historyScreen').classList.add('hidden');
+            document.getElementById('referralScreen').classList.add('hidden');
+            
+            // Show selected screen
+            document.getElementById(screenName + 'Screen').classList.remove('hidden');
+            
+            // Update navigation
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.target.closest('.nav-item').classList.add('active');
+            
+            // Update history if showing history screen
+            if (screenName === 'history') {
+                updateHistoryDisplay();
+            }
+        }
+
+        // Selling Functions
+        function toggleSelling() {
+            const button = document.getElementById('sellButton');
+            const indicator = document.getElementById('sellingIndicator');
+            
+            if (isSellingData) {
+                // Stop selling
+                isSellingData = false;
+                clearInterval(sellInterval);
+                button.textContent = '▶️ Start Selling';
+                button.className = 'sell-button start';
+                indicator.classList.add('hidden');
+                showNotification('Data selling stopped!');
+            } else {
+                // Start selling
+                isSellingData = true;
+                button.textContent = '⏹️ Stop Selling';
+                button.className = 'sell-button stop';
+                indicator.classList.remove('hidden');
+                showNotification('Data selling started! 10MB per second');
+                
+                // Start the selling interval
+                sellInterval = setInterval(() => {
+                    const dataAmount = 0.01; // 10MB = 0.01GB
+                    const earnings = 1; // ₹1 per 10MB
+                    
+                    balance += earnings;
+                    todaysEarnings += earnings;
+                    totalDataSold = Math.round((totalDataSold + dataAmount) * 100) / 100;
+                    
+                    updateBalance();
+                    updateEarnings();
+                    updateDataSold();
+                    
+                    // Simulate referral earnings for referred users
+                    if (Math.random() < 0.005) { // Simulate referral activity
+                        const referralEarning = Math.round(earnings * 2.5) / 100; // 2.5% of earnings
+                        referralEarnings += referralEarning;
+                        
+                        const referralTransaction = {
+                            id: Date.now() + 1,
+                            type: 'referral',
+                            amount: referralEarning,
+                            data: 'Referral Commission',
+                            date: new Date().toISOString().split('T')[0],
+                            status: 'completed'
+                        };
+                        transactions.unshift(referralTransaction);
+                        if (transactions.length > 10) transactions.pop();
+                    }
+                }, 1000);
+            }
+        }
+
+        // Withdrawal Functions
+        function setAmount(amount) {
+            if (balance >= amount) {
+                document.getElementById('withdrawAmount').value = amount;
+            }
+        }
+
+        function selectMethod(method) {
+            selectedMethod = method;
+            
+            // Update UI
+            document.querySelectorAll('.method-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            event.target.closest('.method-card').classList.add('selected');
+            
+            // Show payment details input
+            const detailsDiv = document.getElementById('paymentDetails');
+            const detailsLabel = document.getElementById('detailsLabel');
+            const paymentInput = document.getElementById('paymentInput');
+            
+            detailsDiv.classList.remove('hidden');
+            
+            if (method === 'UPI') {
+                detailsLabel.textContent = 'UPI ID';
+                paymentInput.placeholder = 'yourname@upi';
+            } else {
+                detailsLabel.textContent = method + ' Number/ID';
+                paymentInput.placeholder = 'Enter ' + method + ' number/ID';
+            }
+        }
+
+        function submitWithdraw() {
+            const amount = parseFloat(document.getElementById('withdrawAmount').value);
+            const paymentDetails = document.getElementById('paymentInput').value;
+            
+            if (!amount || amount <= 0) {
+                showNotification('Please enter valid amount');
+                return;
+            }
+            
+            // Check minimum payout for referral earnings
+            if (amount > balance) {
+                showNotification('Insufficient balance!');
+                return;
+            }
+            
+            // Check minimum payout of 3000 for referral earnings
+            const totalWithdrawable = balance + referralEarnings;
+            if (referralEarnings > 0 && totalWithdrawable < 3000) {
+                showNotification('Minimum payout ₹3,000 for referral earnings!');
+                return;
+            }
+            
+            if (!selectedMethod) {
+                showNotification('Please select withdrawal method');
+                return;
+            }
+            
+            if (!paymentDetails) {
+                showNotification('Please enter payment details');
+                return;
+            }
+            
+            // Process withdrawal
+            balance -= amount;
+            updateBalance();
+            
+            const newTransaction = {
+                id: Date.now(),
+                type: 'withdraw',
+                amount: amount,
+                method: selectedMethod,
+                date: new Date().toISOString().split('T')[0],
+                status: 'processing'
+            };
+            
+            transactions.unshift(newTransaction);
+            
+            // Reset form
+            document.getElementById('withdrawAmount').value = '';
+            document.getElementById('paymentInput').value = '';
+            document.querySelectorAll('.method-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            document.getElementById('paymentDetails').classList.add('hidden');
+            selectedMethod = '';
+            
+            showNotification(`Demo: ₹${amount} withdrawal simulation sent!`);
+            showScreen('home');
+        }
+
+        // History Functions
+        function updateHistoryDisplay() {
+            const emptyHistory = document.getElementById('emptyHistory');
+            const transactionsList = document.getElementById('transactionsList');
+            
+            if (transactions.length === 0) {
+                emptyHistory.classList.remove('hidden');
+                transactionsList.innerHTML = '';
+            } else {
+                emptyHistory.classList.add('hidden');
+                
+                const historyHTML = transactions.map(transaction => `
+                    <div class="transaction-item">
+                        <div class="transaction-left">
+                            <div class="transaction-icon ${transaction.type}">
+                                ${transaction.type === 'sell' ? '📱' : '💳'}
+                            </div>
+                            <div class="transaction-details">
+                                <div class="transaction-title">
+                                    ${
+                                        transaction.type === 'sell' ? `Data Sold - ${transaction.data}` : 
+                                        transaction.type === 'referral' ? `Referral Commission` :
+                                        `Withdrawal - ${transaction.method}`
+                                    }
+                                </div>
+                                <div class="transaction-date">${transaction.date}</div>
+                            </div>
+                        </div>
+                        <div class="transaction-right">
+                            <div class="transaction-amount ${transaction.type === 'sell' ? 'positive' : 'negative'}">
+                                ${transaction.type === 'sell' ? '+' : '-'}₹${transaction.amount}
+                            </div>
+                            <div class="transaction-status">
+                                ${transaction.status === 'completed' ? '✓ Completed' : '⏳ Processing'}
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+                
+                transactionsList.innerHTML = historyHTML;
+            }
+        }
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', function() {
+            updateBalance();
+            updateEarnings();
+            updateDataSold();
+            
+            // Prevent zoom on input focus
+            document.addEventListener('touchstart', {}, true);
+        });
+    </script>
+</body>
+</html>
